@@ -13,7 +13,7 @@ git clone https://github.com/justbecause/justbecause-landing.git
 1. Install dependencies:
 
 ```bash
-yarn install
+npm install
 ```
 
 1. Create environment variables:
@@ -27,15 +27,15 @@ Edit `.env.local` with your email service credentials.
 1. Run the development server:
 
 ```bash
-yarn run dev
+npm run dev
 ```
 
 ## Available Scripts
 
-- `yarn run dev`: Start development server with Turbopack
-- `yarn run build`: Create production build
-- `yarn start`: Start production server
-- `yarn run lint`: Check for linting errors
+- `npm run dev`: Start development server with Turbopack
+- `npm run build`: Create production build
+- `npm start`: Start production server
+- `npm run lint`: Check for linting errors
 
 ## Project Structure
 
