@@ -44,5 +44,3 @@ next-env.d.ts
 # cloudflare workers ignore
 .wrangler
 .open-next
-
-yarn.lock
