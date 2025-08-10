@@ -1,19 +1,10 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
-import { z } from 'zod';
-
-// Define validation schema
-const contactSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name is too long").trim(),
-  email: z.email("Invalid email address").trim(),
-  service: z.string().min(1, "Service is required").max(50, "Invalid selection").trim(),
-  message: z.string().min(1, "Message is required").max(500, "Message is too long").trim(),
-  turnstileToken: z.string().min(1, "Turnstile token is required")
-});
+import transporter from '../../../../lib/mailer';
+import { contactFormSchema } from '../../../../lib/validation';
 
 export async function POST(request: Request) {
   // Parse and validate request body
-  const result = contactSchema.safeParse(await request.json());
+  const result = contactFormSchema.safeParse(await request.json());
   
   if (!result.success) {
     const errorMessages = result.error.issues.map(issue => issue.message).join(', ');
@@ -47,17 +38,6 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Create transporter using environment variables
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
     // Prepare email content
     const mailOptions = {
       from: `"JustBecause Contact Form" <${process.env.SMTP_USER}>`,
@@ -73,17 +53,18 @@ export async function POST(request: Request) {
       `,
     };
 
-    // Send email
+    // Send email using reusable transport
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json(
       { message: 'Message sent successfully' },
       { status: 200 }
     );
-  } catch {
-    console.error('Error sending email');
+  } catch (error: unknown) {
+    console.error('Error sending email:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to send message' },
+      { error: `Failed to send message: ${errorMessage}` },
       { status: 500 }
     );
   }

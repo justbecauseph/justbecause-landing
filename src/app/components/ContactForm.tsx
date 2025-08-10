@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import ErrorBoundary from './ErrorBoundary';
 import Turnstile from 'react-turnstile';
 import { FaPaperPlane } from 'react-icons/fa';
+import { contactFormSchema } from '../../../lib/validation';
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,8 @@ const ContactForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string>('');
+  const [turnstileKey, setTurnstileKey] = useState<number>(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -27,63 +31,78 @@ const ContactForm: React.FC = () => {
         delete newErrors[name];
         return newErrors;
       });
+      setServerError('');
     }
   };
 
   const validate = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+    // First validate the form fields
+    const formResult = contactFormSchema.safeParse(formData);
+    if (!formResult.success) {
+      const newErrors: Record<string, string> = {};
+      formResult.error.issues.forEach(issue => {
+        const field = issue.path[0] as string;
+        newErrors[field] = issue.message;
+      });
+      setErrors(newErrors);
+      return false;
     }
     
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+    // Then validate the turnstile token
+    if (!turnstileToken) {
+      console.log('Turnstile token missing');
+      setErrors(prev => ({ ...prev, turnstileToken: 'Please complete the CAPTCHA' }));
+      return false;
     }
     
-    if (!formData.service) {
-      newErrors.service = 'Please select a service';
-    }
-    
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    console.log('All validation passed');
+    setErrors({});
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted');
     
-    if (!validate()) return;
+    console.log('Validation started');
+    const isValid = validate();
+    console.log('Validation result:', isValid);
+    if (!isValid) return;
     
     if (!turnstileToken) {
+      console.log('Turnstile token missing');
       setSubmitStatus('error');
+      setServerError('Please complete the CAPTCHA');
       return;
     }
     
     setIsSubmitting(true);
     setSubmitStatus(null);
+    setServerError('');
     
     try {
+      console.log('Sending request to /api/contact');
+      const requestBody = JSON.stringify({
+        ...formData,
+        turnstileToken
+      });
+      
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          turnstileToken
-        }),
+        body: requestBody,
       });
+      
+      console.log('Response status:', response.status);
       
       if (response.ok) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', service: '', message: '' });
         setTurnstileToken(null);
+        setServerError('');
+        setTurnstileKey(prev => prev + 1);
       } else {
         setSubmitStatus('error');
         setTurnstileToken(null);
@@ -91,14 +110,34 @@ const ContactForm: React.FC = () => {
     } catch (error: unknown) {
       console.error('Submission error:', error);
       setSubmitStatus('error');
+      setServerError(`Client error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const resetForm = () => {
+    setFormData({ name: '', email: '', service: '', message: '' });
+    setErrors({});
+    setSubmitStatus(null);
+    setServerError('');
+    setTurnstileToken(null);
+    setTurnstileKey(prev => prev + 1);
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+    <ErrorBoundary>
+      <div className="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-gray-900">Get in Touch</h2>
+        <button
+          type="button"
+          onClick={resetForm}
+          className="text-sm text-blue-600 hover:text-blue-800"
+        >
+          Reset Form
+        </button>
+      </div>
       
       {submitStatus === 'success' && (
         <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-lg">
@@ -108,7 +147,7 @@ const ContactForm: React.FC = () => {
       
       {submitStatus === 'error' && (
         <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
-          Something went wrong. Please try again later.
+          {serverError || 'Something went wrong. Please try again later.'}
         </div>
       )}
       
@@ -183,6 +222,7 @@ const ContactForm: React.FC = () => {
 
         <div className="mt-6">
           <Turnstile
+            key={turnstileKey}
             sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
             onVerify={setTurnstileToken}
             onError={() => setTurnstileToken(null)}
@@ -193,8 +233,9 @@ const ContactForm: React.FC = () => {
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || submitStatus === 'success' || !turnstileToken}
           className="form-button"
+          onClick={() => console.log('Submit button clicked')}
         >
           {isSubmitting ? (
             'Sending...'
@@ -205,7 +246,8 @@ const ContactForm: React.FC = () => {
           )}
         </button>
       </form>
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 };
 
