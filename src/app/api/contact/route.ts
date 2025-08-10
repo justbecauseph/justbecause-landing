@@ -1,17 +1,29 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { z } from 'zod';
+
+// Define validation schema
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100, "Name is too long").trim(),
+  email: z.email("Invalid email address").trim(),
+  service: z.string().min(1, "Service is required").max(50, "Invalid selection").trim(),
+  message: z.string().min(1, "Message is required").max(500, "Message is too long").trim(),
+  turnstileToken: z.string().min(1, "Turnstile token is required")
+});
 
 export async function POST(request: Request) {
-  const { name, email, service, message, turnstileToken } = await request.json();
-
-  // Validate request data
-  // Validate required fields
-  if (!name || !email || !service || !message || !turnstileToken) {
+  // Parse and validate request body
+  const result = contactSchema.safeParse(await request.json());
+  
+  if (!result.success) {
+    const errorMessages = result.error.issues.map(issue => issue.message).join(', ');
     return NextResponse.json(
-      { error: 'All fields are required' },
+      { error: `Validation failed: ${errorMessages}` },
       { status: 400 }
     );
   }
+  
+  const { name, email, service, message, turnstileToken } = result.data;
 
   // Validate Turnstile token
   const validationResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
