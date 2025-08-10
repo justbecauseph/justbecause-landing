@@ -12,7 +12,7 @@ export default function Footer() {
           
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
-            <p className="text-gray-400">Email: <strong>info@justbecause.ph</strong></p>
+            <p className="text-gray-400">Email: <strong><a href="mailto:info@justbecause.ph">info@justbecause.ph</a></strong></p>
             <p className="text-gray-400">Phone: <strong><a href="tel:+639524807466">+63 952 480 7466</a></strong></p>
           </div>
         </div>
