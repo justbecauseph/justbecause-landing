@@ -65,4 +65,14 @@ TURNSTILE_SECRET_KEY=test
 # Next.js build settings
 NEXT_PUBLIC_SITE_NAME="Site Name"
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=test
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/XXXX/XXX/XXXX
+TELEGRAM_BOT_TOKEN=XXXX:XXXX
+TELEGRAM_CHAT_ID=XXXX
 ```
+
+### Notification Setup
+
+The application will automatically send notifications to Slack and Telegram when contact form submissions are successfully processed. To enable:
+
+1. For Slack: Create an incoming webhook and set `SLACK_WEBHOOK_URL`
+2. For Telegram: Create a bot via @BotFather and set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`

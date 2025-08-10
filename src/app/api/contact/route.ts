@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import transporter from '../../../../lib/mailer';
 import { contactFormSchema } from '../../../../lib/validation';
+import { sendSlackNotification } from '../../../../lib/slackNotifier';
+import { sendTelegramNotification } from '../../../../lib/telegramNotifier';
 
 export async function POST(request: Request) {
   // Parse and validate request body
@@ -55,6 +57,12 @@ export async function POST(request: Request) {
 
     // Send email using reusable transport
     await transporter.sendMail(mailOptions);
+    
+    // Send notifications to Slack and Telegram
+    await Promise.allSettled([
+      sendSlackNotification(result.data),
+      sendTelegramNotification(result.data)
+    ]);
 
     return NextResponse.json(
       { message: 'Message sent successfully' },
