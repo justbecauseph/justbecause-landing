@@ -1,3 +1,5 @@
+import Obfuscate from "react-obfuscate";
+
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white py-8 px-6">
@@ -12,8 +14,8 @@ export default function Footer() {
           
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
-            <p className="text-gray-400">Email: <strong>info@justbecause.ph</strong></p>
-            <p className="text-gray-400">Phone: <strong><a href="tel:+639524807466">+63 952 480 7466</a></strong></p>
+            <p className="text-gray-400">Email: <strong><Obfuscate email="info@justbecause.ph" /></strong></p>
+            <p className="text-gray-400">Phone: <strong><Obfuscate tel="+63 952 480 7466" /></strong></p>
           </div>
         </div>
         
