@@ -1,10 +1,12 @@
 import { ContactFormData } from './types';
 
 // Helper function to escape all MarkdownV2 special characters
-function escapeMarkdownV2(text: string): string {
+function escapeMarkdownV2(text: string | null | undefined): string {
+  if (typeof text !== 'string') return '';
+  
   // List of characters to escape in MarkdownV2
   // See: https://core.telegram.org/bots/api#markdownv2-style
-  return text.replace(/([_*\[\]()~`>#+\-=|{}\.!\\])/g, '\\$1');
+  return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
 }
 
 export async function sendTelegramNotification(formData: ContactFormData) {

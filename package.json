@@ -9,7 +9,12 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "test": "jest --config jest.config.js"
+  },
+  "engines": {
+    "node": ">=22.x",
+    "npm": ">=10.x"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.5",
@@ -26,13 +31,16 @@
     "@eslint/eslintrc": "^3",
     "@opennextjs/aws": "^3.7.4",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
+    "jest": "^30.0.5",
     "tailwindcss": "^4",
+    "ts-jest": "^29.4.1",
     "typescript": "^5",
     "wrangler": "^4.28.1"
   }

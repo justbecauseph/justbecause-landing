@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Obfuscate from 'react-obfuscate';
 
-
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -38,6 +37,7 @@ export default function Header() {
           </nav>
           
           <button
+            type="button"
             className="md:hidden text-2xl"
             onClick={toggleMenu}
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}

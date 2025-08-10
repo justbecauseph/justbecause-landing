@@ -7,7 +7,7 @@ import { sendTelegramNotification } from '../../../../lib/telegramNotifier';
 export async function POST(request: Request) {
   // Parse and validate request body
   const result = contactFormSchema.safeParse(await request.json());
-  
+
   if (!result.success) {
     const errorMessages = result.error.issues.map(issue => issue.message).join(', ');
     return NextResponse.json(
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  
+
   const { name, email, service, message, turnstileToken } = result.data;
 
   // Validate Turnstile token
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   });
 
   const validationData = await validationResponse.json();
-  
+
   if (!validationData.success) {
     return NextResponse.json(
       { error: 'Invalid Request. Please try again.' },
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
 
     // Send email using reusable transport
     await transporter.sendMail(mailOptions);
-    
+
     // Send notifications to Slack and Telegram
     await Promise.allSettled([
       sendSlackNotification(result.data),
