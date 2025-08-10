@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   
   if (!validationData.success) {
     return NextResponse.json(
-      { error: 'Invalid Turnstile token. Please try again.' },
+      { error: 'Invalid Request. Please try again.' },
       { status: 400 }
     );
   }
@@ -68,8 +68,8 @@ export async function POST(request: Request) {
       { message: 'Message sent successfully' },
       { status: 200 }
     );
-  } catch (error) {
-    console.error('Error sending email:', error);
+  } catch {
+    console.error('Error sending email');
     return NextResponse.json(
       { error: 'Failed to send message' },
       { status: 500 }
