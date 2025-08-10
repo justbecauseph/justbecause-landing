@@ -4,30 +4,36 @@ This is the repo for the JustBecause Landing Page.
 
 ## Getting Started
 
-1. Clone the repository:
+Clone the repository:
 
 ```bash
 git clone https://github.com/justbecause/justbecause-landing.git
 ```
 
-1. Install dependencies:
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-1. Create environment variables:
+Create environment variables:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Edit `.env.local` with your email service credentials.
+Edit `.env.local` with your local environment overrides.
 
-1. Run the development server:
+Run the development server:
 
 ```bash
 npm run dev
+```
+
+Run the tests:
+
+```bash
+npm test
 ```
 
 ## Available Scripts
@@ -36,17 +42,51 @@ npm run dev
 - `npm run build`: Create production build
 - `npm start`: Start production server
 - `npm run lint`: Check for linting errors
+- `npm test`: Run all Jest tests
 
 ## Project Structure
 
 ```plaintext
-src/
-├── app/               # App router
-│   ├── components/    # Reusable components
-│   ├── api/           # API routes
-│   ├── layout.tsx     # Root layout
-│   └── page.tsx       # Home page
-public/                # Static assets
+.
+├── .github/                      # GitHub configuration
+│   └── workflows/
+│       └── ci.yaml               # CI workflow
+├── lib/                          # Utility modules
+│   ├── mailer.ts                 # Email sending module
+│   ├── slackNotifier.ts          # Slack notification module
+│   ├── telegramNotifier.ts       # Telegram notification module
+│   ├── types.ts                  # TypeScript type definitions
+│   ├── validation.ts             # Validation utilities
+│   └── __tests__/                # Tests for utility modules
+├── public/                       # Static assets
+│   ├── _headers
+│   ├── digitalocean.svg
+│   ├── file.svg
+│   ├── gcp.png
+│   ├── globe.svg
+│   ├── justbecauseph.png
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+└── src/
+    └── app/                      # Next.js app router
+        ├── api/                  # API routes
+        │   └── contact/
+        │       ├── route.ts      # Contact form API route
+        │       └── __tests__/    # Tests for API route
+        ├── components/           # Reusable components
+        │   ├── ContactForm.tsx   # Contact form component
+        │   ├── ErrorBoundary.tsx
+        │   ├── Footer.tsx
+        │   ├── Header.tsx
+        │   ├── ScrollButton.tsx
+        │   └── ServiceCard.tsx
+        ├── favicon.ico
+        ├── globals.css           # Global styles
+        ├── layout.tsx            # Root layout
+        ├── page.tsx              # Home page
+        ├── robots.ts             # Robots.txt configuration
+        └── sitemap.ts            # Sitemap configuration
 ```
 
 ## Environment Variables
@@ -62,12 +102,14 @@ SMTP_PASS=test
 CONTACT_EMAIL=info@test.ph
 TURNSTILE_SECRET_KEY=test
 
-# Next.js build settings
-NEXT_PUBLIC_SITE_NAME="Site Name"
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=test
+# Notification Configuration
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/XXXX/XXX/XXXX
 TELEGRAM_BOT_TOKEN=XXXX:XXXX
 TELEGRAM_CHAT_ID=XXXX
+
+# Next.js build settings
+NEXT_PUBLIC_SITE_NAME="Site Name"
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=test
 ```
 
 ### Notification Setup
