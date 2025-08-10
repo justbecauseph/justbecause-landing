@@ -42,5 +42,5 @@ yarn-error.log*
 next-env.d.ts
 
 # cloudflare workers ignore
-.wrangler
-.open-next
+/.wrangler/
+/.open-next/
