@@ -187,6 +187,7 @@ const ContactForm: React.FC = () => {
             onVerify={setTurnstileToken}
             onError={() => setTurnstileToken(null)}
             onExpire={() => setTurnstileToken(null)}
+            theme='light'
           />
         </div>
 
