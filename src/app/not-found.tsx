@@ -1,13 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Header from './components/Header';
-import Footer from './components/Footer';
 
 export default function NotFound() {
   return (
-    <>
-      <Header />
       <main className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-6">
         <div className="max-w-md text-center">
           <h1 className="text-9xl font-bold text-blue-500 mb-4">404</h1>
@@ -23,7 +19,5 @@ export default function NotFound() {
           </Link>
         </div>
       </main>
-      <Footer />
-    </>
   );
 }

@@ -13,7 +13,7 @@ afterAll(() => {
 });
 
 // Mock fetch
-global.fetch = jest.fn() as jest.Mock;
+global.fetch = jest.fn();
 
 describe('telegramNotifier', () => {
   describe('environment validation', () => {
