@@ -32,8 +32,8 @@ export default function Header() {
         
         <div className="flex items-center">
           <nav className="hidden md:flex space-x-6">
-            <Link href="#services" className="hover:text-blue-400 transition">Services</Link>
-            <Link href="#contact" className="hover:text-blue-400 transition">Contact</Link>
+            <Link href="/#services" className="hover:text-blue-400 transition">Services</Link>
+            <Link href="/#contact" className="hover:text-blue-400 transition">Contact</Link>
           </nav>
           
           <button
@@ -52,14 +52,14 @@ export default function Header() {
         <div className="md:hidden bg-gray-800 absolute top-16 left-0 w-full z-50">
           <div className="container mx-auto py-4 px-6 flex flex-col space-y-4">
             <Link
-              href="#services"
+              href="/#services"
               className="hover:text-blue-400 transition py-2"
               onClick={() => setIsMenuOpen(false)}
             >
               Services
             </Link>
             <Link
-              href="#contact"
+              href="/#contact"
               className="hover:text-blue-400 transition py-2"
               onClick={() => setIsMenuOpen(false)}
             >
