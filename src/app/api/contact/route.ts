@@ -18,25 +18,27 @@ export async function POST(request: Request) {
 
   const { name, email, service, message, turnstileToken } = result.data;
 
-  // Validate Turnstile token
-  const validationResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      secret: process.env.TURNSTILE_SECRET_KEY,
-      response: turnstileToken
-    })
-  });
+  // Validate Turnstile token only if not in localhost
+  if (new URL(request.url).hostname !== 'localhost') {
+    const validationResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        secret: process.env.TURNSTILE_SECRET_KEY,
+        response: turnstileToken
+      })
+    });
 
-  const validationData = await validationResponse.json();
+    const validationData = await validationResponse.json();
 
-  if (!validationData.success) {
-    return NextResponse.json(
-      { error: 'Invalid Request. Please try again.' },
-      { status: 400 }
-    );
+    if (!validationData.success) {
+      return NextResponse.json(
+        { error: 'Invalid Request. Please try again.' },
+        { status: 400 }
+      );
+    }
   }
 
   try {
