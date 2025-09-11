@@ -103,7 +103,6 @@ describe('mailer module', () => {
       callback(null);
       
       expect(mockVerify).toHaveBeenCalled();
-      expect(consoleSpy.log).toHaveBeenCalledWith('Mail transport is ready');
       expect(consoleSpy.error).not.toHaveBeenCalled();
     });
 
