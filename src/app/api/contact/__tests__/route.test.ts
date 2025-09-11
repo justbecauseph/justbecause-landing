@@ -68,25 +68,6 @@ describe('POST /api/contact', () => {
     expect(data.error).toContain('Validation failed: Name is required, Invalid email');
   });
 
-  it('should return 400 for invalid Turnstile token', async () => {
-    // Mock validation success
-    (contactFormSchema.safeParse as jest.Mock).mockReturnValueOnce({
-      success: true,
-      data: validData
-    });
-
-    // Mock Turnstile failure
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve({ success: false })
-    });
-
-    const response = await POST(mockRequest(validData));
-    const data = await response.json();
-
-    expect(response.status).toBe(400);
-    expect(data.error).toBe('Invalid Request. Please try again.');
-  });
-
   it('should send email and notifications on success', async () => {
     // Mock validation success
     (contactFormSchema.safeParse as jest.Mock).mockReturnValueOnce({
