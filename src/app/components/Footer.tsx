@@ -1,10 +1,22 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Obfuscate from "react-obfuscate"
 import Image from "next/image"
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaTwitter, FaGithub, FaRocket } from "react-icons/fa"
 
 export default function Footer() {
+  const [loadTime, setLoadTime] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.performance) {
+      const navigationTiming = window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
+      if (navigationTiming) {
+        setLoadTime(Math.round(navigationTiming.duration));
+      }
+    }
+  }, [])
+
   return (
     <footer className="relative bg-black border-t border-white/10 text-white overflow-hidden">
       {/* Background effects */}
@@ -134,17 +146,19 @@ export default function Footer() {
             <div className="flex items-center text-white/60 mb-4 md:mb-0">
               <FaRocket className="mr-2 text-purple-400" />
               <span className="text-sm">
-                © {new Date().getFullYear()} JustBecause IT Solutions. Crafted with passion in the Philippines.
+                © {new Date().getFullYear()} JustBecause IT Solutions
               </span>
             </div>
 
             <div className="flex items-center space-x-6 text-sm text-white/60">
               <span className="flex items-center">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
-                Available for new projects
+                  {loadTime !== null && (
+                      <>
+                          <span>Page loaded in: {loadTime}ms</span>
+                      </>
+                  )}
               </span>
-              <span>•</span>
-              <span>Response time: &lt; 24hrs</span>
             </div>
           </div>
         </div>
