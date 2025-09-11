@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import React, { useState } from "react"
 import ErrorBoundary from "./ErrorBoundary"
 import Turnstile from "react-turnstile"
 import { FaPaperPlane, FaRocket, FaCheckCircle } from "react-icons/fa"

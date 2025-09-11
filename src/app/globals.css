@@ -226,3 +226,9 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #1d4ed8, #1e40af);
 }
+
+/* Add global styles here */
+
+.custom-spin-duration {
+  animation-duration: 20s !important;
+}

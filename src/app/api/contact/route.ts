@@ -47,11 +47,11 @@ export async function POST(request: Request) {
       subject: `New Contact Form Submission - ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nService: ${service}\nMessage: ${message}`,
       html: `
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Service:</strong> ${service}</p>
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Service:</strong> ${escapeHtml(service)}</p>
         <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
       `,
     };
 
@@ -76,4 +76,13 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+}
+
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
+    .replace(/'/g, '&#039;');
 }

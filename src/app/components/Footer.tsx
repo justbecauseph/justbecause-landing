@@ -33,6 +33,8 @@ export default function Footer() {
                   alt="DigitalOcean Partner"
                   width={120}
                   height={40}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 50vw, 120px"
                   className="relative opacity-70 hover:opacity-100 transition-opacity duration-300"
                 />
               </div>
@@ -43,6 +45,8 @@ export default function Footer() {
                   alt="Google Cloud Professional"
                   width={40}
                   height={40}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 50vw, 40px"
                   className="relative opacity-70 hover:opacity-100 transition-opacity duration-300"
                 />
               </div>

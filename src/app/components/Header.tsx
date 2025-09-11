@@ -43,6 +43,7 @@ export default function Header() {
                     height={44}
                     className="relative h-10 w-auto transition-all duration-300 group-hover:scale-105"
                     priority
+                    sizes="(max-width: 768px) 100vw, 275px"
                   />
                 </div>
               </Link>
