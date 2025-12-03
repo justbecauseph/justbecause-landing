@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: github-runner-gcloud
+    runs-on: gcloud
 
     strategy:
       matrix:
