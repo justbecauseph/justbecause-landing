@@ -43,6 +43,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "jest": "^30.0.5",
+    "jest-junit": "^16.0.0",
     "postcss": "^8.5",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.1",

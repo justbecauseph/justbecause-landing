@@ -8,17 +8,17 @@ on:
 
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [22.x]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -27,7 +27,15 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test
+        run: npx jest --reporters=default --reporters=jest-junit
+
+      - name: Mergify CI Upload
+        if: success() || failure()
+        uses: mergifyio/gha-mergify-ci@v8
+        with:
+          job_name: justbecause_landing_test_node (${{ matrix.node-version }})
+          token: ${{ secrets.MERGIFY_TOKEN }}
+          report_path: junit.xml
 
       - name: Build application
         run: npm run build
