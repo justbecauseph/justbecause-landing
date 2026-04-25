@@ -37,7 +37,7 @@
     "@opennextjs/aws": "^3.7.4",
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22",
+    "@types/node": "^25",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
