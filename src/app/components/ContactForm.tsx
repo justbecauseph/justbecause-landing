@@ -6,15 +6,15 @@ import ErrorBoundary from "./ErrorBoundary";
 
 const Turnstile = dynamic(() => import("react-turnstile"), {
   ssr: false,
-  loading: () => <div className="h-[65px] w-[300px] rounded-lg bg-[#111926]/60 animate-pulse" />,
+  loading: () => <div className="h-[65px] w-[300px] animate-pulse rounded-lg bg-mist" />,
 });
 
 const SERVICE_OPTIONS = [
-  { value: "integration", label: "Platform Integration" },
-  { value: "cloud", label: "Cloud Deployment" },
-  { value: "development", label: "Solutions Development" },
-  { value: "consultancy", label: "IT Consultancy" },
-  { value: "other", label: "Other Inquiries" },
+  { value: "integration", label: "Platform integration" },
+  { value: "cloud", label: "Cloud deployment" },
+  { value: "development", label: "Solutions development" },
+  { value: "consultancy", label: "IT consultancy" },
+  { value: "other", label: "Something else" },
 ] as const;
 
 const ContactForm: React.FC = () => {
@@ -96,7 +96,7 @@ const ContactForm: React.FC = () => {
     if (!turnstileToken) {
       setErrors((prev) => ({
         ...prev,
-        turnstileToken: "Complete the security verification before sending.",
+        turnstileToken: "Complete the security check before sending.",
       }));
       return false;
     }
@@ -113,7 +113,7 @@ const ContactForm: React.FC = () => {
 
     if (!turnstileToken) {
       setSubmitStatus("error");
-      setServerError("Complete the security verification before sending.");
+      setServerError("Complete the security check before sending.");
       return;
     }
 
@@ -161,285 +161,177 @@ const ContactForm: React.FC = () => {
     setTurnstileKey((prev) => prev + 1);
   };
 
+  const fieldClass = (hasError: boolean) =>
+    `w-full rounded-xl border bg-white px-4 py-3.5 text-base text-ink placeholder:text-ink/60 transition-colors focus:border-plum focus:outline-none focus:ring-4 focus:ring-plum/10 ${
+      hasError ? "border-danger" : "border-ink/45 hover:border-ink/70"
+    }`;
+  const labelClass = "mb-2 block text-[15px] font-semibold text-ink";
+  const errorClass = "mt-2 text-sm text-danger";
+
   return (
     <ErrorBoundary>
-      <div className="relative rounded-2xl bg-[#0D131C] border border-slate-800/90 shadow-[0_24px_80px_-20px_rgba(0,0,0,0.85)] overflow-hidden">
-        {/* Console header bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/90 bg-[#070A0F]/80">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-[#38BDF8]" />
-            <span className="font-mono text-xs uppercase tracking-wider text-slate-300">
-              CONSOLE // PROJECT BRIEF INTAKE
+      <div className="rounded-3xl bg-paper p-6 text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)] sm:p-10">
+        {submitStatus === "success" ? (
+          <output className="mb-8 block rounded-2xl border border-teal/25 bg-teal/5 p-5">
+            <span className="block font-semibold text-teal">Message sent</span>
+            <span className="mt-1 block text-[15px] text-ink/75">
+              An engineer will read it and reply within 24 hours.
             </span>
+          </output>
+        ) : null}
+
+        {submitStatus === "error" ? (
+          <div role="alert" className="mb-8 rounded-2xl border border-danger/30 bg-danger/5 p-5">
+            <div className="font-semibold text-danger">Your message was not sent</div>
+            <div className="mt-1 text-[15px] text-ink/75">
+              {serverError ||
+                "Check your connection and try again, or email info@justbecause.ph directly."}
+            </div>
           </div>
-          <span className="font-mono text-xs text-slate-400">SLA &lt; 24H RESPONSE</span>
-        </div>
+        ) : null}
 
-        <div className="p-6 sm:p-8 md:p-10">
-          {submitStatus === "success" ? (
-            <output className="mb-8 p-5 bg-emerald-950/40 border border-emerald-500/40 text-emerald-200 rounded-xl flex items-start gap-3.5">
-              <svg
-                className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <div>
-                <div className="font-semibold text-sm text-white">Project brief received</div>
-                <div className="text-sm text-emerald-200/80 mt-0.5">
-                  An engineer from our Manila team will review your requirements and reply within 24
-                  hours.
-                </div>
-              </div>
-            </output>
-          ) : null}
-
-          {submitStatus === "error" ? (
-            <div
-              role="alert"
-              className="mb-8 p-5 bg-rose-950/40 border border-rose-500/40 text-rose-200 rounded-xl"
-            >
-              <div className="font-semibold text-sm text-white">
-                Could not deliver your project brief
-              </div>
-              <div className="text-sm text-rose-200/80 mt-1">
-                {serverError ||
-                  "Check your connection and try again, or email info@justbecause.ph directly."}
-              </div>
-            </div>
-          ) : null}
-
-          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block font-mono text-xs uppercase tracking-wider text-slate-300 mb-2"
-                >
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Alex Rivera"
-                  aria-invalid={Boolean(errors.name)}
-                  aria-describedby={errors.name ? "name-error" : undefined}
-                  className={`w-full px-4 py-3 bg-[#070A0F] border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#38BDF8] transition-colors ${
-                    errors.name ? "border-rose-500/80" : "border-slate-800 hover:border-slate-700"
-                  }`}
-                />
-                {errors.name ? (
-                  <p id="name-error" className="text-rose-400 text-xs font-mono mt-2">
-                    {errors.name}
-                  </p>
-                ) : null}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block font-mono text-xs uppercase tracking-wider text-slate-300 mb-2"
-                >
-                  Work Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="alex@company.com"
-                  aria-invalid={Boolean(errors.email)}
-                  aria-describedby={errors.email ? "email-error" : undefined}
-                  className={`w-full px-4 py-3 bg-[#070A0F] border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#38BDF8] transition-colors ${
-                    errors.email ? "border-rose-500/80" : "border-slate-800 hover:border-slate-700"
-                  }`}
-                />
-                {errors.email ? (
-                  <p id="email-error" className="text-rose-400 text-xs font-mono mt-2">
-                    {errors.email}
-                  </p>
-                ) : null}
-              </div>
-            </div>
-
+        <form onSubmit={handleSubmit} className="space-y-7" noValidate>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label
-                  htmlFor="service"
-                  className="block font-mono text-xs uppercase tracking-wider text-slate-300"
-                >
-                  Capability Needed
-                </label>
-                <span className="font-mono text-[11px] text-slate-500">Select a focus area</span>
-              </div>
-
-              {/* Quick-select interactive pills synced with select */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                {SERVICE_OPTIONS.map((opt) => {
-                  const selected = formData.service === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => selectServicePill(opt.value)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer border ${
-                        selected
-                          ? "bg-[#38BDF8]/15 border-[#38BDF8] text-[#38BDF8]"
-                          : "bg-[#070A0F] border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="relative">
-                <select
-                  id="service"
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                  aria-invalid={Boolean(errors.service)}
-                  aria-describedby={errors.service ? "service-error" : undefined}
-                  className={`w-full px-4 py-3 bg-[#070A0F] border rounded-xl text-white text-sm focus:outline-none focus:border-[#38BDF8] transition-colors appearance-none cursor-pointer ${
-                    errors.service
-                      ? "border-rose-500/80"
-                      : "border-slate-800 hover:border-slate-700"
-                  }`}
-                >
-                  <option value="" className="bg-[#070A0F] text-slate-400">
-                    Select capability area
-                  </option>
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value} className="bg-[#070A0F] text-white">
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                  <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path
-                      d="M4 6L8 10L12 6"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-              {errors.service ? (
-                <p id="service-error" className="text-rose-400 text-xs font-mono mt-2">
-                  {errors.service}
-                </p>
-              ) : null}
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label
-                  htmlFor="message"
-                  className="block font-mono text-xs uppercase tracking-wider text-slate-300"
-                >
-                  System Context &amp; Goals
-                </label>
-                <span
-                  className={`font-mono text-xs ${
-                    formData.message.length > 500 ? "text-rose-400" : "text-slate-500"
-                  }`}
-                >
-                  {formData.message.length}/500
-                </span>
-              </div>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
+              <label htmlFor="name" className={labelClass}>
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                autoComplete="name"
+                value={formData.name}
                 onChange={handleChange}
-                rows={5}
-                placeholder="Describe the systems you want to connect, target cloud environment, timeline, or current bottleneck..."
-                aria-invalid={Boolean(errors.message)}
-                aria-describedby={errors.message ? "message-error" : undefined}
-                className={`w-full px-4 py-3 bg-[#070A0F] border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#38BDF8] transition-colors resize-none ${
-                  errors.message ? "border-rose-500/80" : "border-slate-800 hover:border-slate-700"
-                }`}
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={errors.name ? "name-error" : undefined}
+                className={fieldClass(Boolean(errors.name))}
               />
-              {errors.message ? (
-                <p id="message-error" className="text-rose-400 text-xs font-mono mt-2">
-                  {errors.message}
+              {errors.name ? (
+                <p id="name-error" className={errorClass}>
+                  {errors.name}
                 </p>
               ) : null}
             </div>
 
-            <div className="pt-1">
-              <div className="inline-flex p-3 bg-[#070A0F] rounded-xl border border-slate-800/90">
-                <Turnstile
-                  key={turnstileKey}
-                  sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
-                  onVerify={setTurnstileToken}
-                  onError={() => setTurnstileToken(null)}
-                  onExpire={() => setTurnstileToken(null)}
-                  theme="dark"
-                />
-              </div>
-              {errors.turnstileToken ? (
-                <p className="text-rose-400 text-xs font-mono mt-2">{errors.turnstileToken}</p>
+            <div>
+              <label htmlFor="email" className={labelClass}>
+                Work email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? "email-error" : undefined}
+                className={fieldClass(Boolean(errors.email))}
+              />
+              {errors.email ? (
+                <p id="email-error" className={errorClass}>
+                  {errors.email}
+                </p>
               ) : null}
             </div>
+          </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-3 border-t border-slate-800/80">
-              <button
-                type="submit"
-                disabled={isSubmitting || submitStatus === "success" || !turnstileToken}
-                className="group inline-flex items-center justify-center gap-2.5 bg-[#38BDF8] hover:bg-[#2DD4BF] text-[#070A0F] font-semibold py-3.5 px-7 rounded-xl text-sm transition-all duration-200 disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer shadow-[0_0_28px_rgba(56,189,248,0.2)]"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-[#070A0F]/30 border-t-[#070A0F] rounded-full animate-spin" />
-                    <span>Sending Project Brief...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Send Project Brief</span>
-                    <svg
-                      className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </>
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={resetForm}
-                className="text-slate-400 hover:text-white transition-colors text-xs font-mono uppercase tracking-wider px-4 py-2 cursor-pointer"
-              >
-                Clear Form
-              </button>
+          <fieldset aria-describedby={errors.service ? "service-error" : undefined}>
+            <legend className={labelClass}>What do you need help with?</legend>
+            <div className="flex flex-wrap gap-2.5">
+              {SERVICE_OPTIONS.map((opt) => {
+                const selected = formData.service === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => selectServicePill(opt.value)}
+                    className={`cursor-pointer rounded-full border px-4 py-2 text-[15px] font-medium transition-colors ${
+                      selected
+                        ? "border-plum bg-plum text-white"
+                        : "border-ink/45 bg-white text-ink/80 hover:border-plum hover:text-plum"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
             </div>
-          </form>
-        </div>
+            {errors.service ? (
+              <p id="service-error" className={errorClass}>
+                Choose the closest option.
+              </p>
+            ) : null}
+          </fieldset>
+
+          <div>
+            <div className="flex items-baseline justify-between">
+              <label htmlFor="message" className={labelClass}>
+                What are you trying to solve?
+              </label>
+              <span
+                className={`text-sm ${formData.message.length > 500 ? "text-danger" : "text-ink/65"}`}
+              >
+                {formData.message.length}/500
+              </span>
+            </div>
+            <textarea
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              rows={5}
+              placeholder="The systems involved, where it hurts, and any deadline."
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? "message-error" : undefined}
+              className={`${fieldClass(Boolean(errors.message))} resize-none`}
+            />
+            {errors.message ? (
+              <p id="message-error" className={errorClass}>
+                {errors.message}
+              </p>
+            ) : null}
+          </div>
+
+          <div>
+            <Turnstile
+              key={turnstileKey}
+              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+              onVerify={setTurnstileToken}
+              onError={() => setTurnstileToken(null)}
+              onExpire={() => setTurnstileToken(null)}
+              theme="light"
+            />
+            {errors.turnstileToken ? <p className={errorClass}>{errors.turnstileToken}</p> : null}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <button
+              type="submit"
+              disabled={isSubmitting || submitStatus === "success" || !turnstileToken}
+              className="inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-full bg-plum px-8 py-4 font-semibold text-white transition-colors hover:bg-berry disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Sending message…
+                </>
+              ) : (
+                "Send message"
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={resetForm}
+              className="cursor-pointer text-[15px] text-ink/65 underline-offset-4 transition-colors hover:text-ink hover:underline"
+            >
+              Clear form
+            </button>
+          </div>
+        </form>
       </div>
     </ErrorBoundary>
   );

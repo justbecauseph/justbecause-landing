@@ -30,13 +30,13 @@ class ErrorBoundary extends Component<Props, State> {
       return (
         this.props.fallback || (
           <div
-            className="bg-rose-950/40 border border-rose-500/40 text-rose-200 px-5 py-4 rounded-xl"
+            className="rounded-2xl border border-danger/30 bg-white px-5 py-4 text-ink"
             role="alert"
           >
-            <strong className="font-semibold text-white block mb-1">
-              Component failed to render
+            <strong className="mb-1 block font-semibold text-danger">
+              The form could not load
             </strong>
-            <span className="text-sm text-rose-200/80">
+            <span className="text-sm text-ink/70">
               Refresh the page to reload the form, or email info@justbecause.ph directly.
             </span>
           </div>

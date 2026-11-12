@@ -2,21 +2,20 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-[#070A0F] blueprint-grid text-[#F1F5F9] p-6">
-      <div className="max-w-md w-full rounded-2xl bg-[#0D131C] border border-slate-800 p-8 text-center shadow-2xl">
-        <div className="font-mono text-xs uppercase tracking-widest text-[#38BDF8] mb-3">
-          HTTP 404 // ROUTE NOT FOUND
-        </div>
-        <h1 className="font-display text-5xl font-bold text-white mb-3">404</h1>
-        <h2 className="font-display text-xl font-semibold text-slate-200 mb-3">Page Not Found</h2>
-        <p className="text-slate-400 text-sm leading-relaxed mb-8">
-          The URL you requested does not match an active route on justbecause.ph.
+    <main className="flex min-h-screen flex-col items-start justify-center bg-paper px-6 text-ink">
+      <div className="mx-auto w-full max-w-2xl">
+        <p className="text-[15px] font-medium text-teal">404</p>
+        <h1 className="mt-4 font-display text-5xl font-bold tracking-tight sm:text-6xl">
+          This page isn’t here, <span className="text-wordmark">just because.</span>
+        </h1>
+        <p className="mt-6 text-lg text-ink/70">
+          The address may be mistyped, or the page may have moved.
         </p>
         <Link
           href="/"
-          className="inline-flex items-center justify-center bg-[#38BDF8] hover:bg-[#2DD4BF] text-[#070A0F] font-semibold py-3 px-6 rounded-xl text-sm transition-colors"
+          className="mt-10 inline-block rounded-full bg-plum px-8 py-4 font-semibold text-white transition-colors hover:bg-berry"
         >
-          Return to Homepage
+          Go to the homepage
         </Link>
       </div>
     </main>

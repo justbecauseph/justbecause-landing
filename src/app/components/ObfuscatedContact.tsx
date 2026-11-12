@@ -39,7 +39,7 @@ export default function ObfuscatedContact({
   const href = email ? `mailto:${email}` : tel ? `tel:${tel.replace(/\s+/g, "")}` : "#";
 
   return (
-    <a href={href} className={`hover:text-[#38BDF8] transition-colors duration-200 ${className}`}>
+    <a href={href} className={`underline-offset-4 hover:underline ${className}`}>
       {value}
     </a>
   );
