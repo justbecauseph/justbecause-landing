@@ -3,6 +3,9 @@
   "main": ".open-next/worker.js",
   "name": "justbecause-landing",
   "compatibility_date": "2025-08-03",
+  // esbuild keep_names injects __name() into functions that next-themes serializes
+  // into an inline <script>, which throws "__name is not defined" in the browser.
+  "keep_names": false,
   "compatibility_flags": [
     // Enable Node.js API
     // see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag

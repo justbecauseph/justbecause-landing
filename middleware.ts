@@ -1,22 +1,27 @@
 import { NextResponse } from "next/server";
 
-export function middleware() {
-  const nonce = globalThis.crypto
-    .getRandomValues(new Uint8Array(16))
-    .reduce((acc, byte) => acc + byte.toString(16).padStart(2, "0"), "");
-  const csp = [
-    "default-src 'self';",
-    "script-src 'self' 'nonce-" + nonce + "' https://challenges.cloudflare.com;",
-    "style-src 'self' 'nonce-" + nonce + "' 'unsafe-inline' https://fonts.googleapis.com;",
-    "font-src 'self' https://fonts.gstatic.com;",
-    "img-src 'self' data:;",
-    "connect-src 'self';",
-    "frame-src https://challenges.cloudflare.com;",
-    "form-action 'self';",
-    "base-uri 'self';",
-    "object-src 'none'",
-  ].join(" ");
+const isDev = process.env.NODE_ENV === "development";
 
+// Pages are statically prerendered, so Next.js cannot attach a per-request nonce
+// to its inline scripts/styles. A nonce in the CSP would also make browsers ignore
+// 'unsafe-inline' and block hydration, so this policy uses 'unsafe-inline' instead.
+// See node_modules/next/dist/docs/01-app/02-guides/content-security-policy.md ("Without Nonces").
+const posthogHosts = "https://us.i.posthog.com https://us-assets.i.posthog.com";
+
+const csp = [
+  "default-src 'self';",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com ${posthogHosts};`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
+  "font-src 'self' https://fonts.gstatic.com;",
+  "img-src 'self' data:;",
+  `connect-src 'self' ${posthogHosts};`,
+  "frame-src https://challenges.cloudflare.com;",
+  "form-action 'self';",
+  "base-uri 'self';",
+  "object-src 'none'",
+].join(" ");
+
+export function middleware() {
   const response = NextResponse.next();
 
   // Security headers configuration
