@@ -10,11 +10,12 @@ const posthogHosts = "https://us.i.posthog.com https://us-assets.i.posthog.com";
 
 const csp = [
   "default-src 'self';",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com ${posthogHosts};`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com https://static.cloudflareinsights.com ${posthogHosts};`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
   "font-src 'self' https://fonts.gstatic.com;",
   "img-src 'self' data:;",
-  `connect-src 'self' ${posthogHosts};`,
+  // Cloudflare Web Analytics: beacon script from static.cloudflareinsights.com, reports to cloudflareinsights.com
+  `connect-src 'self' https://cloudflareinsights.com ${posthogHosts};`,
   "frame-src https://challenges.cloudflare.com;",
   "form-action 'self';",
   "base-uri 'self';",
