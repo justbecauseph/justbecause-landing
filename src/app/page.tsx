@@ -36,6 +36,7 @@ export default function Home() {
             alt=""
             width={400}
             height={400}
+            preload
             className="pointer-events-none absolute -right-28 top-10 w-[380px] max-w-none animate-splat select-none opacity-25 sm:opacity-40 lg:-right-16 lg:top-14 lg:w-[640px] lg:opacity-100"
           />
 
