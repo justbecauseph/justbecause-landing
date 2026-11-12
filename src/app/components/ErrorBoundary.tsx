@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -21,17 +21,26 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
     this.setState({ hasError: true, error });
   }
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback || (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error! </strong>
-          <span className="block sm:inline">Something went wrong. Please try again later.</span>
-        </div>
+      return (
+        this.props.fallback || (
+          <div
+            className="bg-rose-950/40 border border-rose-500/40 text-rose-200 px-5 py-4 rounded-xl"
+            role="alert"
+          >
+            <strong className="font-semibold text-white block mb-1">
+              Component failed to render
+            </strong>
+            <span className="text-sm text-rose-200/80">
+              Refresh the page to reload the form, or email info@justbecause.ph directly.
+            </span>
+          </div>
+        )
       );
     }
 

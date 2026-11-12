@@ -1,48 +1,112 @@
-import React from 'react';
+"use client";
 
-interface ServiceCardProps {
-  title: string
-  description: string
-  icon: React.ReactNode
-  index?: number
+import React from "react";
+
+export interface ServiceCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  index?: number;
+  layerTag?: string;
+  serviceKey?: string;
+  deliverables?: string[];
+  outcome?: string;
 }
-const ServiceCard: React.FC<ServiceCardProps> = React.memo(({ title, description, icon, index = 0 }) => {
-  return (
-    <div
-      className={`group relative bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-500 p-8 hover:bg-gradient-to-br hover:from-white/10 hover:to-white/[0.05] overflow-hidden service-card-delay-${index}`}
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-      <div className="absolute top-4 right-4 w-2 h-2 bg-purple-400/30 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500"></div>
-      <div className="absolute bottom-6 left-6 w-1 h-1 bg-blue-400/40 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-700"></div>
+const ServiceCard: React.FC<ServiceCardProps> = React.memo(
+  ({ title, description, icon, index = 0, layerTag, serviceKey, deliverables = [], outcome }) => {
+    const handleScopeClick = () => {
+      if (typeof window !== "undefined") {
+        if (serviceKey) {
+          window.dispatchEvent(
+            new CustomEvent("justbecause:select-service", {
+              detail: { service: serviceKey },
+            }),
+          );
+        }
+        const contactEl = document.getElementById("contact");
+        if (contactEl) {
+          contactEl.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    };
 
-      <div className="relative z-10">
-        <div className="relative mb-6">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-150"></div>
-          <div
-            className="relative w-16 h-16 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-white/20 group-hover:scale-110 transition-all duration-500"
-            aria-hidden="true"
-          >
-            <div className="text-white/80 group-hover:text-white transition-colors duration-300 group-hover:scale-110 transform transition-transform">
+    return (
+      <article
+        className={`group relative flex flex-col justify-between rounded-2xl bg-[#0D131C] border border-slate-800/90 hover:border-[#38BDF8]/50 transition-all duration-300 p-7 sm:p-8 overflow-hidden service-card-delay-${index}`}
+      >
+        {/* Top subtle accent rule on hover */}
+        <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-[#38BDF8] via-[#2DD4BF] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        <div>
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div
+              className="w-12 h-12 rounded-xl bg-[#111926] border border-slate-800 group-hover:border-[#38BDF8]/40 flex items-center justify-center text-[#38BDF8] transition-colors duration-200"
+              aria-hidden="true"
+            >
               {icon}
             </div>
+            {layerTag ? (
+              <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400 px-2.5 py-1 rounded-md bg-[#070A0F] border border-slate-800/80">
+                {layerTag}
+              </span>
+            ) : null}
           </div>
+
+          <h3 className="font-display text-xl sm:text-2xl font-bold text-white mb-3 tracking-tight group-hover:text-[#38BDF8] transition-colors duration-200">
+            {title}
+          </h3>
+
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">{description}</p>
+
+          {deliverables.length > 0 ? (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {deliverables.map((item) => (
+                <span
+                  key={item}
+                  className="font-mono text-xs text-slate-300 bg-[#111926] border border-slate-800/90 px-2.5 py-1 rounded-md"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
 
-        <h3 className="text-xl font-bold text-white mb-4 group-hover:bg-gradient-to-r group-hover:from-purple-200 group-hover:to-blue-200 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-500">
-          {title}
-        </h3>
+        <div className="pt-5 border-t border-slate-800/80 flex items-center justify-between gap-4">
+          {outcome ? (
+            <span className="font-mono text-xs text-slate-400">{outcome}</span>
+          ) : (
+            <span className="font-mono text-xs text-slate-400">Production-grade delivery</span>
+          )}
 
-        <p className="text-white/60 leading-relaxed mb-6 group-hover:text-white/80 transition-colors duration-300">
-          {description}
-        </p>
-      </div>
-
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 via-transparent to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-    </div>
-  )
-});
+          <button
+            type="button"
+            onClick={handleScopeClick}
+            className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-[#38BDF8] hover:text-[#2DD4BF] transition-colors cursor-pointer shrink-0"
+          >
+            <span>Scope</span>
+            <svg
+              className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M3 8H13M13 8L9 4M13 8L9 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </article>
+    );
+  },
+);
 
 ServiceCard.displayName = "ServiceCard";
 
-export default ServiceCard
+export default ServiceCard;

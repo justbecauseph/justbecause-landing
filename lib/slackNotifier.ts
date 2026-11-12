@@ -1,9 +1,9 @@
-import { ContactFormData } from './types';
+import { ContactFormData } from "./types";
 
 export async function sendSlackNotification(formData: ContactFormData) {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!webhookUrl) {
-    console.error('SLACK_WEBHOOK_URL not configured');
+    console.error("SLACK_WEBHOOK_URL not configured");
     return;
   }
 
@@ -14,23 +14,23 @@ export async function sendSlackNotification(formData: ContactFormData) {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `📬 *New Contact Form Submission*\n*Name:* ${name}\n*Email:* ${email}\n*Service:* ${service}\n*Message:* ${message}`
-        }
-      }
-    ]
+          text: `📬 *New Contact Form Submission*\n*Name:* ${name}\n*Email:* ${email}\n*Service:* ${service}\n*Message:* ${message}`,
+        },
+      },
+    ],
   };
 
   try {
     const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Slack notification failed: ${response.statusText}`);
     }
   } catch (error) {
-    console.error('Error sending Slack notification:', error);
+    console.error("Error sending Slack notification:", error);
   }
 }

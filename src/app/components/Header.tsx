@@ -1,158 +1,216 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Obfuscate from "react-obfuscate"
-import { FaEnvelope, FaPhone, FaArrowRight } from "react-icons/fa"
-import Image from "next/image"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import ObfuscatedContact from "./ObfuscatedContact";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 24);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMenuOpen]);
 
   return (
-      <header
-        className={`fixed w-full z-50 transition-all duration-500 ${
-          isScrolled
-            ? "top-0 bg-black/80 backdrop-blur-2xl border-b border-white/5"
-            : "top-16 lg:top-20 bg-black/40 backdrop-blur-xl"
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-[#070A0F]/90 backdrop-blur-xl border-b border-slate-800/80 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+          : "bg-[#070A0F]/65 backdrop-blur-md border-b border-slate-800/40"
+      }`}
+    >
+      {/* Top engineering telemetry strip — collapses smoothly on scroll */}
+      <div
+        className={`hidden lg:block border-b border-slate-800/60 bg-[#05080C] transition-all duration-300 overflow-hidden ${
+          isScrolled ? "max-h-0 opacity-0 border-b-0" : "max-h-9 opacity-100"
         }`}
       >
-        <div className="container mx-auto px-6">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Link href="/" className="group flex items-center">
-                <div className="relative">
-                  <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                  <Image
-                    src="/justbecause-logo.png"
-                    alt="JustBecause Research & Development"
-                    width={275}
-                    height={44}
-                    className="relative h-10 w-auto transition-all duration-300 group-hover:scale-105"
-                    priority
-                    sizes="(max-width: 768px) 100vw, 275px"
-                  />
-                </div>
-              </Link>
+        <div className="container mx-auto max-w-7xl px-6 h-9 flex items-center justify-between font-mono text-[11px] text-slate-400">
+          <div className="flex items-center gap-4">
+            <span className="inline-flex items-center gap-1.5 text-slate-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              SYSTEMS ARCHITECTURE &amp; CLOUD ENGINEERING
+            </span>
+            <span className="text-slate-700">/</span>
+            <span>EST. 2016 · MANILA, PH (UTC+8)</span>
+          </div>
+          <div className="flex items-center gap-5">
+            <ObfuscatedContact email="info@justbecause.ph" className="text-slate-400" />
+            <span className="text-slate-700">/</span>
+            <ObfuscatedContact tel="+63 952 480 7466" className="text-slate-400" />
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto max-w-7xl px-6">
+        <div className="flex justify-between items-center h-20">
+          <Link
+            href="/"
+            className="group flex items-center gap-3.5 focus:outline-none"
+            aria-label="JustBecause IT Solutions Home"
+          >
+            <div className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-[#0D131C] border border-slate-800 group-hover:border-[#38BDF8]/50 transition-colors">
+              <Image
+                src="/justbecauseph.png"
+                alt=""
+                width={28}
+                height={28}
+                className="w-7 h-7 object-contain"
+                priority
+              />
             </div>
+            <div className="flex flex-col">
+              <Image
+                src="/justbecause-logo.png"
+                alt="JustBecause Research & Development"
+                width={185}
+                height={30}
+                className="h-6 w-auto brightness-0 invert opacity-95 group-hover:opacity-100 transition-opacity"
+                priority
+                sizes="185px"
+              />
+            </div>
+          </Link>
 
-            <nav className="hidden md:flex items-center space-x-2">
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-full p-1 shadow-2xl">
-                <div className="flex items-center space-x-1">
-                  <Link
-                    href="/#services"
-                    className="px-6 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 font-medium"
-                  >
-                    Services
-                  </Link>
-                  <span className="text-white/60">|</span>
-                  <Link
-                    href="/#contact"
-                    className="px-6 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 font-medium"
-                  >
-                    Contact
-                  </Link>
-                </div>
-              </div>
-
-              <Link
-                href="/#contact"
-                className="ml-4 group relative bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-3 rounded-full hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 font-semibold overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center space-x-2">
-                  <span>Get Started</span>
-                  <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-300" />
-                </div>
-              </Link>
-            </nav>
-
-            <button
-              type="button"
-              className="md:hidden relative w-12 h-12 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300"
-              onClick={toggleMenu}
-              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          <nav className="hidden md:flex items-center gap-1" aria-label="Primary navigation">
+            <Link
+              href="/#services"
+              className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-slate-800/50 transition-colors"
             >
-              <div className="relative w-6 h-6 flex items-center justify-center">
-                <div
-                  className={`absolute w-5 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? "rotate-45" : "-translate-y-1.5"}`}
-                ></div>
-                <div
-                  className={`absolute w-5 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`}
-                ></div>
-                <div
-                  className={`absolute w-5 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? "-rotate-45" : "translate-y-1.5"}`}
-                ></div>
-              </div>
-            </button>
-          </div>
+              Services
+            </Link>
+            <Link
+              href="/#approach"
+              className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-slate-800/50 transition-colors"
+            >
+              Approach
+            </Link>
+            <Link
+              href="/#contact"
+              className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-slate-800/50 transition-colors"
+            >
+              Contact
+            </Link>
+
+            <div className="h-4 w-px bg-slate-800 mx-3" aria-hidden="true" />
+
+            <Link
+              href="/#contact"
+              className="group inline-flex items-center gap-2 bg-[#38BDF8] hover:bg-[#2DD4BF] text-[#070A0F] px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 shadow-[0_0_24px_rgba(56,189,248,0.2)]"
+            >
+              <span>Scope a Project</span>
+              <svg
+                className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+          </nav>
+
+          <button
+            type="button"
+            className="md:hidden relative w-11 h-11 bg-[#0D131C] border border-slate-800 rounded-lg flex items-center justify-center text-slate-200 hover:border-slate-700 transition-colors"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+          >
+            <div className="relative w-5 h-5 flex items-center justify-center">
+              <span
+                className={`absolute w-5 h-0.5 bg-current transition-all duration-200 ${
+                  isMenuOpen ? "rotate-45" : "-translate-y-1.5"
+                }`}
+              />
+              <span
+                className={`absolute w-5 h-0.5 bg-current transition-all duration-200 ${
+                  isMenuOpen ? "opacity-0" : ""
+                }`}
+              />
+              <span
+                className={`absolute w-5 h-0.5 bg-current transition-all duration-200 ${
+                  isMenuOpen ? "-rotate-45" : "translate-y-1.5"
+                }`}
+              />
+            </div>
+          </button>
         </div>
+      </div>
 
-        <div
-          className={`md:hidden transition-all duration-500 ${
-            isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-          }`}
-        >
-          <div className="bg-black/95 backdrop-blur-2xl border-t border-white/10">
-            <div className="container mx-auto px-6 py-8">
-              <div className="space-y-6">
-                <Link
-                  href="/#services"
-                  className="block text-2xl font-semibold text-white/80 hover:text-white transition-colors duration-300 py-3"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Services
-                </Link>
+      {/* Mobile Navigation Drawer */}
+      <div
+        className={`md:hidden transition-all duration-300 overflow-hidden ${
+          isMenuOpen ? "max-h-[420px] opacity-100 border-t border-slate-800" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="bg-[#070A0F]/98 backdrop-blur-xl px-6 py-6 space-y-5">
+          <div className="flex flex-col space-y-1">
+            <Link
+              href="/#services"
+              className="px-3 py-2.5 text-base font-medium text-slate-200 hover:text-[#38BDF8] rounded-lg hover:bg-slate-900 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Services
+            </Link>
+            <Link
+              href="/#approach"
+              className="px-3 py-2.5 text-base font-medium text-slate-200 hover:text-[#38BDF8] rounded-lg hover:bg-slate-900 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Approach
+            </Link>
+            <Link
+              href="/#contact"
+              className="px-3 py-2.5 text-base font-medium text-slate-200 hover:text-[#38BDF8] rounded-lg hover:bg-slate-900 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact
+            </Link>
+          </div>
 
-                <Link
-                  href="/#contact"
-                  className="block text-2xl font-semibold text-white/80 hover:text-white transition-colors duration-300 py-3"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Contact
-                </Link>
-
-                <div className="pt-8 border-t border-white/10 space-y-4">
-                  <div className="flex items-center text-white/60 hover:text-white/80 transition-colors duration-300">
-                    <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center mr-4">
-                      <FaEnvelope className="text-purple-400" />
-                    </div>
-                    <span className="font-medium"><Obfuscate email="info@justbecause.ph" /></span>
-                  </div>
-                  <div className="flex items-center text-white/60 hover:text-white/80 transition-colors duration-300">
-                    <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center mr-4">
-                      <FaPhone className="text-blue-400" />
-                    </div>
-                    <span className="font-medium"><Obfuscate tel="+63 952 480 7466" /></span>
-                  </div>
-                </div>
-
-                <div className="pt-6">
-                  <Link
-                    href="/#contact"
-                    className="block w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white text-center px-8 py-4 rounded-full font-semibold hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Get Started
-                  </Link>
-                </div>
-              </div>
+          <div className="pt-4 border-t border-slate-800/80 space-y-2.5 font-mono text-xs text-slate-400">
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">EMAIL</span>
+              <ObfuscatedContact email="info@justbecause.ph" className="text-slate-200" />
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">DIRECT</span>
+              <ObfuscatedContact tel="+63 952 480 7466" className="text-slate-200" />
             </div>
           </div>
+
+          <Link
+            href="/#contact"
+            className="block w-full bg-[#38BDF8] hover:bg-[#2DD4BF] text-[#070A0F] text-center px-6 py-3 rounded-lg font-semibold text-sm transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Scope a Project
+          </Link>
         </div>
-      </header>
-  )
+      </div>
+    </header>
+  );
 }

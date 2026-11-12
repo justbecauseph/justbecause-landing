@@ -1,20 +1,20 @@
-import { ContactFormData } from './types';
+import { ContactFormData } from "./types";
 
 // Helper function to escape all MarkdownV2 special characters
 function escapeMarkdownV2(text: string | null | undefined): string {
-  if (typeof text !== 'string') return '';
-  
+  if (typeof text !== "string") return "";
+
   // List of characters to escape in MarkdownV2
   // See: https://core.telegram.org/bots/api#markdownv2-style
-  return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+  return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, "\\$1");
 }
 
 export async function sendTelegramNotification(formData: ContactFormData) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
-  
+
   if (!botToken || !chatId) {
-    console.error('TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not configured');
+    console.error("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not configured");
     return;
   }
 
@@ -27,19 +27,19 @@ export async function sendTelegramNotification(formData: ContactFormData) {
 
   try {
     const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
         text,
-        parse_mode: 'MarkdownV2'
-      })
+        parse_mode: "MarkdownV2",
+      }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Telegram notification failed: ${response.statusText}`);
     }
   } catch (error) {
-    console.error('Error sending Telegram notification:', error);
+    console.error("Error sending Telegram notification:", error);
   }
 }
