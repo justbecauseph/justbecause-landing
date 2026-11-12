@@ -31,14 +31,17 @@ export default function Home() {
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden pb-20 pt-32 lg:pb-24 lg:pt-40">
-          <Image
-            src="/justbecauseph.png"
-            alt=""
-            width={400}
-            height={400}
-            preload
-            className="pointer-events-none absolute -right-28 top-10 w-[380px] max-w-none animate-splat select-none opacity-25 sm:opacity-40 lg:-right-16 lg:top-14 lg:w-[640px] lg:opacity-100"
-          />
+          {/* Positioned against the content column, not the viewport, so it stays beside the headline on wide screens */}
+          <div className="pointer-events-none absolute inset-0 mx-auto max-w-6xl">
+            <Image
+              src="/justbecauseph.png"
+              alt=""
+              width={400}
+              height={400}
+              preload
+              className="absolute -right-28 top-10 w-[380px] max-w-none animate-splat select-none opacity-25 sm:opacity-40 lg:-right-20 lg:top-14 lg:w-[640px] lg:opacity-100"
+            />
+          </div>
 
           <div className="relative mx-auto max-w-6xl px-6">
             <p className="animate-rise text-[15px] font-medium text-teal">
@@ -140,14 +143,16 @@ export default function Home() {
           id="contact"
           className="relative overflow-hidden bg-night py-24 text-white lg:py-32"
         >
-          <Image
-            src="/justbecauseph.png"
-            alt=""
-            width={400}
-            height={400}
-            loading="lazy"
-            className="pointer-events-none absolute -bottom-40 -left-40 w-[560px] max-w-none select-none opacity-20"
-          />
+          <div className="pointer-events-none absolute inset-0 mx-auto max-w-6xl">
+            <Image
+              src="/justbecauseph.png"
+              alt=""
+              width={400}
+              height={400}
+              loading="lazy"
+              className="absolute -bottom-40 -left-40 w-[560px] max-w-none select-none opacity-20"
+            />
+          </div>
 
           <div className="relative mx-auto grid max-w-6xl gap-14 px-6 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-5">
